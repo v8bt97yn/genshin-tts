@@ -1,6 +1,6 @@
 # pip install -r requirements.txt
 pytesseract
 Pillow
-edge_tts
+edge-tts
 keyboard
 pygame

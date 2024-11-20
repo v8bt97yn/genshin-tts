@@ -15,12 +15,12 @@ os.makedirs("captured_images", exist_ok=True)
 # Configuration
 REGION = (250, 890, 1670, 1050)  # Updated screen capture region
 VOICE_SETTINGS = {
-    '1': ("en-US-ChristopherNeural", "-5Hz"),  # Male voice, lower pitch
+    '1': ("en-US-SteffanNeural", "-5Hz"),  # Male voice, lower pitch
     '4': ("en-US-ChristopherNeural", "+5Hz"),  # Male voice, higher pitch
-    '7': ("en-US-ChristopherNeural", "+15Hz"), # Male voice, highest pitch
-    '3': ("en-US-AriaNeural", "-5Hz"),        # Female voice, lower pitch
+    '7': ("en-US-RogerNeural", "+15Hz"), # Male voice, highest pitch
+    '3': ("en-US-MichelleNeural", "-5Hz"),        # Female voice, lower pitch
     '6': ("en-US-AriaNeural", "+5Hz"),        # Female voice, higher pitch
-    '9': ("en-US-AriaNeural", "+15Hz"),       # Female voice, highest pitch
+    '9': ("en-US-JennyNeural", "+15Hz"),       # Female voice, highest pitch
 }
 MAX_FILES = 3  # Maximum number of stored audio/image files for cleanup
 

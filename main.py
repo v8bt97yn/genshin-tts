@@ -10,19 +10,22 @@ import time
 # Initialize pygame and pytesseract
 pygame.mixer.init()
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
-os.makedirs("captured_images", exist_ok=True)
+
+# Create cache directories
+os.makedirs("cache/image", exist_ok=True)
+os.makedirs("cache/audio", exist_ok=True)
 
 # Configuration
-REGION = (250, 890, 1670, 1050)  # Updated screen capture region
+REGION = (250, 840, 1670, 1020)  # Updated screen capture region
 VOICE_SETTINGS = {
     '1': ("en-US-SteffanNeural", "-5Hz"),  # Male voice, lower pitch
     '4': ("en-US-ChristopherNeural", "+5Hz"),  # Male voice, higher pitch
-    '7': ("en-US-RogerNeural", "+15Hz"), # Male voice, highest pitch
-    '3': ("en-US-MichelleNeural", "-5Hz"),        # Female voice, lower pitch
-    '6': ("en-US-AriaNeural", "+5Hz"),        # Female voice, higher pitch
-    '9': ("en-US-JennyNeural", "+15Hz"),       # Female voice, highest pitch
+    '7': ("en-US-RogerNeural", "+15Hz"),  # Male voice, highest pitch
+    '3': ("en-US-MichelleNeural", "-5Hz"),  # Female voice, lower pitch
+    '6': ("en-US-AriaNeural", "+5Hz"),  # Female voice, higher pitch
+    '9': ("en-US-JennyNeural", "+15Hz"),  # Female voice, highest pitch
 }
-MAX_FILES = 3  # Maximum number of stored audio/image files for cleanup
+MAX_AUDIO_FILES = 2  # Maximum number of stored audio files
 
 # Utility: Limit stored files in a directory
 def enforce_file_limit(directory, extension, limit):
@@ -36,10 +39,14 @@ def enforce_file_limit(directory, extension, limit):
 # Capture screen text
 def capture_text(region):
     """Capture text from the specified screen region and remove line breaks."""
-    enforce_file_limit("captured_images", ".png", MAX_FILES)
+    enforce_file_limit("cache/image", ".png", MAX_AUDIO_FILES)
+    timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+    image_path = f"cache/image/screenshot_{timestamp}.png"
+    filtered_image_path = f"cache/image/sample_filtered_{timestamp}.png"
+
     screenshot = ImageGrab.grab(bbox=region)
-    filtered_image = apply_color_filter(screenshot, (245, 241, 237), 15)
-    filtered_image.save("captured_images/sample_filtered.png")
+    filtered_image = apply_color_filter(screenshot, (246, 242, 238, 255), 5)
+    filtered_image.save(filtered_image_path)
     raw_text = pytesseract.image_to_string(filtered_image, config='--oem 3 --psm 6')
     # Replace line breaks with a single space
     processed_text = raw_text.replace("\n", " ").strip()
@@ -59,9 +66,9 @@ def apply_color_filter(image, target_color, tolerance):
 # Text-to-Speech with Punctuation Preservation
 def speak_text_fixed(text, voice, pitch):
     """Convert text to speech using edge-tts, preserving punctuation."""
-    enforce_file_limit(".", ".mp3", MAX_FILES)
+    enforce_file_limit("cache/audio", ".mp3", MAX_AUDIO_FILES)
     timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-    filename = f"tts_output_{timestamp}.mp3"
+    audio_path = f"cache/audio/tts_output_{timestamp}.mp3"
 
     # Debug: Print raw text
     print("Raw Text to TTS:", text)
@@ -72,7 +79,7 @@ def speak_text_fixed(text, voice, pitch):
         f"--voice={voice}",
         f"--pitch={pitch}",
         f"--text={text}",  # Pass text as-is
-        f"--write-media={filename}"
+        f"--write-media={audio_path}"
     ]
 
     try:
@@ -80,10 +87,10 @@ def speak_text_fixed(text, voice, pitch):
         subprocess.run(command, check=True)
 
         # Debug: Confirm audio file generation
-        print(f"Audio file generated: {filename}")
+        print(f"Audio file generated: {audio_path}")
 
         # Play the audio file using pygame
-        pygame.mixer.music.load(filename)
+        pygame.mixer.music.load(audio_path)
         pygame.mixer.music.play()
     except subprocess.CalledProcessError as e:
         print(f"Error during TTS execution: {e}")

@@ -18,12 +18,10 @@ os.makedirs("cache/audio", exist_ok=True)
 # Configuration
 REGION = (250, 840, 1670, 1020)  # Updated screen capture region
 VOICE_SETTINGS = {
-    '1': ("en-US-SteffanNeural", "-5Hz"),  # Male voice, lower pitch
-    '4': ("en-US-ChristopherNeural", "+5Hz"),  # Male voice, higher pitch
-    '7': ("en-US-RogerNeural", "+15Hz"),  # Male voice, highest pitch
-    '3': ("en-US-MichelleNeural", "-5Hz"),  # Female voice, lower pitch
-    '6': ("en-US-AriaNeural", "+5Hz"),  # Female voice, higher pitch
-    '9': ("en-US-JennyNeural", "+15Hz"),  # Female voice, highest pitch
+    ('up', 'right'): ("en-US-JennyNeural", "+15Hz"),  # Female voice, higher pitch
+    ('up', 'left'): ("en-US-SteffanNeural", "+15Hz"),  # Male voice, higher pitch
+    ('down', 'right'): ("en-US-MichelleNeural", "-15Hz"),  # Female voice, lower pitch
+    ('down', 'left'): ("en-US-ChristopherNeural", "-15Hz"),  # Male voice, lower pitch
 }
 MAX_AUDIO_FILES = 2  # Maximum number of stored audio files
 
@@ -105,14 +103,25 @@ def capture_and_speak(region, voice, pitch):
 
 # Main loop
 def main():
-    print("Press numpad keys 1-4 (male voice) or 6-9 (female voice) to trigger TTS.")
-    print("Key 5 is inactive.")
+    print("Use Up/Down as pitch modifiers and Left/Right for gender. Combine them to trigger TTS.")
     while True:
-        for key, (voice, pitch) in VOICE_SETTINGS.items():
-            if keyboard.is_pressed(key):
-                capture_and_speak(REGION, voice, pitch)
-                time.sleep(0.2)  # Debounce to avoid multiple triggers
-        time.sleep(0.1)
+        # Detect modifier keys
+        up_pressed = keyboard.is_pressed('up')
+        down_pressed = keyboard.is_pressed('down')
+        left_pressed = keyboard.is_pressed('left')
+        right_pressed = keyboard.is_pressed('right')
+
+        # Check for key combinations
+        if up_pressed and left_pressed:
+            capture_and_speak(REGION, *VOICE_SETTINGS[('up', 'left')])
+        elif up_pressed and right_pressed:
+            capture_and_speak(REGION, *VOICE_SETTINGS[('up', 'right')])
+        elif down_pressed and left_pressed:
+            capture_and_speak(REGION, *VOICE_SETTINGS[('down', 'left')])
+        elif down_pressed and right_pressed:
+            capture_and_speak(REGION, *VOICE_SETTINGS[('down', 'right')])
+        
+        time.sleep(0.1)  # Prevent excessive CPU usage
 
 if __name__ == "__main__":
     main()

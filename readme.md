@@ -1,4 +1,4 @@
-- install tesseract and update the python with the installation location
+- install [tesseract](https://github.com/tesseract-ocr/tesseract/releases) and update the python with the installation location
 - start the python script
 - use the arrow keys to capture and speak text
     -   up for female

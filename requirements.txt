@@ -1,11 +1,16 @@
 # pip install -r requirements.txt
 os
 time
+asyncio
+threading
+uuid
+ctypes
+datetime
 mss
 keyboard
 pygame
 pytesseract
-asyncio
 edge_tts
-datetime
-PIL
+win32gui
+win32con
+win32process

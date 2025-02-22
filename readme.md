@@ -1,7 +1,9 @@
 - install [tesseract](https://github.com/tesseract-ocr/tesseract/releases) and update the python with the installation location
 - install the requirements:  `pip install -r requirements.txt`
-- start the script as an admin: `python main.py`
-- press '.' (female) or ',' (male) to speak text
+- start the script: `python main.py`
+- use the arrow keys to capture and speak text
+    -   up for female
+    -   down for male
  
 ---
 

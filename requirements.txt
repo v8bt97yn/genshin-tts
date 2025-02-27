@@ -1,16 +1,8 @@
-# pip install -r requirements.txt
-os
-time
-asyncio
-threading
-uuid
-ctypes
-datetime
+# requirements.txt
 mss
 keyboard
 pygame
 pytesseract
-edge_tts
-win32gui
-win32con
-win32process
+pillow
+edge-tts
+pywin32
